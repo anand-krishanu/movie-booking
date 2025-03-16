@@ -5,6 +5,7 @@ import com.anand.movie_booking.entity.Movie;
 import com.anand.movie_booking.repository.MovieRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,8 +21,12 @@ public class MovieService {
     }
 
     public String addNewMovie(Movie movie) {
+        if (movie.getMovieTime().isBefore(LocalDateTime.now())) {
+            return "Cannot add a movie with a past screening time!";
+        }
         return movieRepository.addMovie(movie);
     }
+
 
     public String removeMovie(int movieId) {
         return movieRepository.deleteMovie(movieId);

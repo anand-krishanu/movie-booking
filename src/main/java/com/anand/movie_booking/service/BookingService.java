@@ -42,8 +42,13 @@ public class BookingService {
 
     @Transactional
     public int cancelTicket(int bookingId) {
-        return bookingRepository.deleteBooking(bookingId);
+        int rowsDeleted = bookingRepository.deleteBooking(bookingId);
+        if (rowsDeleted > 0) {
+            seatRepository.cancelBooking(bookingId);
+        }
+        return rowsDeleted;
     }
+
 
     public List<Integer> getAvailableSeats(int movieId) {
         return bookingRepository.getAvailableSeats(movieId);

@@ -27,7 +27,7 @@ public class MovieRepository {
                 new Movie(
                         rs.getInt("movie_id"),
                         rs.getString("title"),
-                        rs.getTimestamp("movie_time").toLocalDateTime() // ✅ FIXED Timestamp → LocalDateTime
+                        rs.getTimestamp("movie_time").toLocalDateTime()
                 )
         );
     }
@@ -37,7 +37,7 @@ public class MovieRepository {
 
         Map<String, Object> params = new HashMap<>();
         params.put("movieName", movie.getMovieName());
-        params.put("movieTime", Timestamp.valueOf(movie.getMovieTime())); // ✅ FIXED LocalDateTime → Timestamp
+        params.put("movieTime", Timestamp.valueOf(movie.getMovieTime()));
 
         jdbcTemplate.update(sql, params);
         return "Movie Added Successfully!";
