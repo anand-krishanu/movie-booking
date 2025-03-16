@@ -62,6 +62,16 @@ public class SeatRepository {
         return rowsAffected > 0 ? "Booking Canceled!" : "Seat Not Found!";
     }
 
+    public List<Integer> getAvailableSeats(int movieId) {
+        String sql = "SELECT seat_number FROM seats WHERE movie_id = :movieId AND seat_id NOT IN (SELECT seat_id FROM bookings WHERE movie_id = :movieId)";
+        return jdbcTemplate.queryForList(sql, Map.of("movieId", movieId), Integer.class);
+    }
+
+    public int getTotalSeatsForMovie(int movieId) {
+        String sql = "SELECT COUNT(*) FROM seats WHERE movie_id = :movieId";
+        return jdbcTemplate.queryForObject(sql, Map.of("movieId", movieId), Integer.class);
+    }
+
     private Seat mapSeat(ResultSet rs) throws SQLException {
         return new Seat(
                 rs.getInt("seat_id"),

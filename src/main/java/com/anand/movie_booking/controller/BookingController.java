@@ -17,7 +17,7 @@ public class BookingController {
     }
 
     @PostMapping("/book")
-    public ResponseEntity<Integer> bookTicket(@RequestBody Booking booking) {
+    public ResponseEntity<String> bookTicket(@RequestBody Booking booking) {
         return ResponseEntity.ok(bookingService.bookTicket(booking));
     }
 
@@ -27,7 +27,7 @@ public class BookingController {
     }
 
     @GetMapping("/available-seats/{movieId}")
-    public ResponseEntity<List<Booking>> getAvailableSeats(@PathVariable int movieId) {
+    public ResponseEntity<List<Integer>> getAvailableSeats(@PathVariable int movieId) {
         return ResponseEntity.ok(bookingService.getAvailableSeats(movieId));
     }
 }

@@ -28,18 +28,25 @@ public class BookingRepository {
         return jdbcTemplate.queryForObject(sql, Map.of("bookingId", bookingId), new BookingRowMapper());
     }
 
-    public int addBooking(Booking booking) {
-        String sql = "INSERT INTO bookings (movie_id, seat_id, user_name) VALUES (:movieId, :seatId, :userName)";
-        return jdbcTemplate.update(sql, Map.of(
+    public String addBooking(Booking booking, double price) {
+        String sql = "INSERT INTO bookings (movie_id, seat_id, user_name, price) VALUES (:movieId, :seatId, :userName, :price)";
+        int rows = jdbcTemplate.update(sql, Map.of(
                 "movieId", booking.getMovieId(),
-                "seatId", booking.getSeatId(), // ✅ Fix field name
-                "userName", booking.getUserName() // ✅ Fix field name
+                "seatId", booking.getSeatId(),
+                "userName", booking.getUserName(),
+                "price", price
         ));
+        return rows > 0 ? "Booking Confirmed!" : "Booking Failed!";
     }
 
     public int deleteBooking(int bookingId) {
         String sql = "DELETE FROM bookings WHERE booking_id = :bookingId";
         return jdbcTemplate.update(sql, Map.of("bookingId", bookingId));
+    }
+
+    public List<Integer> getAvailableSeats(int movieId) {
+        String sql = "SELECT seat_id FROM seats WHERE movie_id = :movieId AND seat_id NOT IN (SELECT seat_id FROM bookings WHERE movie_id = :movieId)";
+        return jdbcTemplate.queryForList(sql, Map.of("movieId", movieId), Integer.class);
     }
 
     private static class BookingRowMapper implements RowMapper<Booking> {
@@ -48,8 +55,8 @@ public class BookingRepository {
             return new Booking(
                     rs.getInt("booking_id"),
                     rs.getInt("movie_id"),
-                    rs.getInt("seat_id"), // ✅ Fix column name
-                    rs.getString("user_name") // ✅ Fix column name
+                    rs.getInt("seat_id"),
+                    rs.getString("user_name")
             );
         }
     }

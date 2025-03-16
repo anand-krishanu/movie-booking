@@ -52,4 +52,14 @@ public class MovieRepository {
         int rowsAffected = jdbcTemplate.update(sql, params);
         return rowsAffected > 0 ? "Movie Deleted!" : "Movie Not Found!";
     }
+
+    public double getBasePrice(int movieId) {
+        String sql = "SELECT base_price FROM movies WHERE movie_id = :movieId";
+        return jdbcTemplate.queryForObject(sql, Map.of("movieId", movieId), Double.class);
+    }
+
+    public Timestamp getMovieTime(int movieId) {
+        String sql = "SELECT movie_time FROM movies WHERE movie_id = :movieId";
+        return jdbcTemplate.queryForObject(sql, Map.of("movieId", movieId), Timestamp.class);
+    }
 }
